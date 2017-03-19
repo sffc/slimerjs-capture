@@ -13,7 +13,7 @@ async.eachSeries(
 	function(cas, next) {
 		var input = fs.readFileSync(cas[0]);
 		var expected = fs.readFileSync(cas[1]);
-		module.capture(input, "svg", 400, 300, (err, result) => {
+		module.capturePng(input, "svg", 400, 300, (err, result) => {
 			if (result.equals(expected)) {
 				console.log("PASS: " + cas[0]);
 				next(null);

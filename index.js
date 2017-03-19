@@ -6,7 +6,7 @@ var tmp = require("tmp");
 var packageJson = require("slimerjs/package.json");
 var binPath = path.join(path.dirname(require.resolve("slimerjs/package.json")), packageJson.bin.slimerjs);
 
-function capture(input, extension, width, height, next) {
+function capturePng(input, extension, width, height, next) {
 	tmp.file({ posfix: extension }, function(err, tmpFile, fd, cleanupCallback) {
 		if (err) return next(err);
 		fs.writeFile(tmpFile, input, function(err) {
@@ -26,5 +26,5 @@ function capture(input, extension, width, height, next) {
 }
 
 module.exports = {
-	capture: capture
+	capturePng: capturePng
 };
