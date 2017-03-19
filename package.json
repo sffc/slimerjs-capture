@@ -8,6 +8,7 @@
   },
   "author": "Shane F. Carr <shane.carr@wustl.edu>",
   "license": "MIT",
+  "repository": "sffc/slimerjs-capture",
   "dependencies": {
     "slimerjs": "^0.10.3",
     "tmp": "0.0.31"
