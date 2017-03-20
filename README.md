@@ -35,7 +35,7 @@ capturePng(buffer, "html", 640, 480, (err, result) => {
 - extension => The file extension, like "html" or "svg"
 - width, height => The width and height of the area to render, in pixels from the top left corner
 - numPages => The number of pages to capture. Pages are rectangular, nonoverlapping regions captured starting from the top of the page.  For example, if height is 200, the first page will be from y=0 to y=200, and the second page will be from y=200 to y=400.
-- callback => Called with a possible error and the output PNG as a Node.js Buffer
+- callback => Called with a possible error and the output PNG as an array of Node.js Buffers, one per page.
 
 ## Contributing and Future Work
 
