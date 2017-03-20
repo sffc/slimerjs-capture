@@ -1,7 +1,7 @@
 slimerjs-capture
 ================
 
-A thin wrapper around [SlimerJS](https://slimerjs.org) that exposes an API to a Node.js application for rendering a web page as a png file.
+A thin wrapper around [SlimerJS](https://slimerjs.org) (headless Firefox/Gecko) that exposes an API to a Node.js application for rendering a web page as a png file.
 
 ## Installation
 
