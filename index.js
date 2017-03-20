@@ -19,7 +19,7 @@ function capturePngPages(input, extension, width, height, numPages, next) {
 		fs.writeFile(tmp1, input, function(err) {
 			if (err) return next(err);
 			var args = [path.join(__dirname, "render.js"), tmp1, tmp2, width, height, numPages];
-			var child = child_process.spawn(binPath, args);
+			var child = child_process.fork(binPath, args);
 			child.on("exit", function() {
 				fs.readFile(tmp2, function(err, buffer) {
 					if (err) return next(err);
@@ -38,12 +38,6 @@ function capturePngPages(input, extension, width, height, numPages, next) {
 			})
 			child.on("error", function(err) {
 				next(err);
-			});
-			child.stdout.on("data", function(chunk) {
-				process.stderr.write(chunk);
-			});
-			child.stderr.on("data", function(chunk) {
-				process.stderr.write(chunk);
 			});
 		});
 	});
