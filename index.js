@@ -18,8 +18,8 @@ function capturePngPages(input, extension, width, height, numPages, next) {
 		if (err) return next(err);
 		fs.writeFile(tmp1, input, function(err) {
 			if (err) return next(err);
-			var args = ["render.js", tmp1, tmp2, width, height, numPages];
-			var child = child_process.spawn(binPath, args, { cwd: __dirname });
+			var args = [path.join(__dirname, "render.js"), tmp1, tmp2, width, height, numPages];
+			var child = child_process.spawn(binPath, args);
 			child.on("exit", function() {
 				fs.readFile(tmp2, function(err, buffer) {
 					if (err) return next(err);
