@@ -1,5 +1,5 @@
 var async = require("async");
-var module = require(".");
+var module = require("./index.js");
 var fs = require("fs");
 
 var cases = [
@@ -15,7 +15,7 @@ async.each(
 		var expected = fs.readFileSync(cas[1]);
 		var expected0 = fs.readFileSync(cas[2]);
 		var expected1 = fs.readFileSync(cas[3]);
-		module.capturePng(input, "svg", 400, 300, (err, result) => {
+		module.capturePng(input, "svg", 400, 300, function(err, result) {
 			if (result.equals(expected)) {
 				console.log("PASS (png): " + cas[0]);
 			} else {
@@ -25,7 +25,7 @@ async.each(
 				return next(new Error());
 			}
 		});
-		module.capturePngPages(input, "svg", 400, 200, 2, (err, pages) => {
+		module.capturePngPages(input, "svg", 400, 200, 2, function(err, pages) {
 			if (pages[0].equals(expected0)) {
 				console.log("PASS (page 0): " + cas[0]);
 			} else {

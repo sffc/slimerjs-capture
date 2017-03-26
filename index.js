@@ -25,7 +25,8 @@ function capturePngPages(input, extension, width, height, numPages, next) {
 					var offset = 0;
 					var pages = [];
 					for (var i=0; i<numPages; i++) {
-						var upos = buffer.indexOf(0x5f, offset); // underscore
+						var upos = offset;
+						for (; buffer[upos] !== 0x5f; upos++); // underscore
 						var len = parseInt(buffer.slice(offset, offset + upos).toString("ascii"));
 						offset = upos + 1;
 						var page = buffer.slice(offset, offset + len);
