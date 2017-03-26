@@ -22,6 +22,7 @@ function capturePngPages(input, extension, width, height, numPages, next) {
 				if (err) return next(err);
 				fs.readFile(tmp2, function(err, buffer) {
 					if (err) return next(err);
+					if (buffer.length === 0) return next(new Error("SlimerJS buffer is empty"));
 					var offset = 0;
 					var pages = [];
 					for (var i=0; i<numPages; i++) {
@@ -51,18 +52,20 @@ function _makeTwoTmpFiles(ext1, ext2, next) {
 function runSlimerJS(args, next) {
 	var child;
 	if (process.platform === "win32") {
-		// Workaround from https://github.com/nodejs/node/issues/7367
 		child = child_process.spawn("slimerjs.bat", args, {
-			shell: true,
-			stdio: "inherit",
 			cwd: binDir
 		});
 	} else {
-		child = child_process.spawn("slimerjs", args, {
-			stdio: "inherit",
+		child = child_process.spawn("./slimerjs", args, {
 			cwd: binDir
 		});
 	}
+	child.stdout.on("data", function(data) {
+		console.log(data.toString());
+	});
+	child.stderr.on("data", function(data) {
+		console.log(data.toString());
+	});
 	child.on("error", function(err) {
 		next(err);
 	});
