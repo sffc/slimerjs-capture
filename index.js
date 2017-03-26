@@ -4,8 +4,7 @@ var path = require("path");
 var tmp = require("tmp");
 var fs = require("fs");
 
-var packageJson = require("slimerjs/package.json");
-var binPath = path.join(path.dirname(require.resolve("slimerjs/package.json")), packageJson.bin.slimerjs);
+var binDir = path.join(path.dirname(require.resolve("slimerjs/package.json")), "src");
 
 function capturePng(input, extension, width, height, next) {
 	capturePngPages(input, extension, width, height, 1, function(err, pages) {
@@ -19,8 +18,8 @@ function capturePngPages(input, extension, width, height, numPages, next) {
 		fs.writeFile(tmp1, input, function(err) {
 			if (err) return next(err);
 			var args = [path.join(__dirname, "render.js"), tmp1, tmp2, width, height, numPages];
-			var child = child_process.fork(binPath, args);
-			child.on("exit", function() {
+			runSlimerJS(args, function(err) {
+				if (err) return next(err);
 				fs.readFile(tmp2, function(err, buffer) {
 					if (err) return next(err);
 					var offset = 0;
@@ -35,9 +34,6 @@ function capturePngPages(input, extension, width, height, numPages, next) {
 					}
 					next(null, pages);
 				});
-			})
-			child.on("error", function(err) {
-				next(err);
 			});
 		});
 	});
@@ -48,6 +44,29 @@ function _makeTwoTmpFiles(ext1, ext2, next) {
 		tmp.file({ postfix: "."+ext2 }, function(err2, tmp2, fd2, cb2) {
 			next(err1 || err2, tmp1, tmp2, function() { cb1(); cb2(); });
 		});
+	});
+}
+
+function runSlimerJS(args, next) {
+	var child;
+	if (process.platform === "win32") {
+		// Workaround from https://github.com/nodejs/node/issues/7367
+		child = child_process.spawn("slimerjs.bat", args, {
+			shell: true,
+			stdio: "inherit",
+			cwd: binDir
+		});
+	} else {
+		child = child_process.spawn("slimerjs", args, {
+			stdio: "inherit",
+			cwd: binDir
+		});
+	}
+	child.on("error", function(err) {
+		next(err);
+	});
+	child.on("exit", function(code){
+		next(null);
 	});
 }
 
