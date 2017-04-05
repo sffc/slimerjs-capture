@@ -53,6 +53,7 @@ function _makeTwoTmpFiles(ext1, ext2, next) {
 function runSlimerJS(args, next) {
 	var child;
 	var messages = "";
+	var eventCnt = 0;
 	if (process.platform === "win32") {
 		child = child_process.spawn("slimerjs.bat", args, {
 			cwd: binDir
@@ -65,14 +66,23 @@ function runSlimerJS(args, next) {
 	child.stdout.on("data", function(data) {
 		messages += data.toString();
 	});
+	child.stdout.on("close", function() {
+		eventCnt++;
+		if (eventCnt === 3) next(null, messages);
+	});
 	child.stderr.on("data", function(data) {
 		messages += data.toString();
+	});
+	child.stderr.on("close", function() {
+		eventCnt++;
+		if (eventCnt === 3) next(null, messages);
 	});
 	child.on("error", function(err) {
 		next(err);
 	});
 	child.on("exit", function(code){
-		next(null, messages);
+		eventCnt++;
+		if (eventCnt === 3) next(null, messages);
 	});
 }
 
