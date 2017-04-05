@@ -18,11 +18,12 @@ function capturePngPages(input, extension, width, height, numPages, next) {
 		fs.writeFile(tmp1, input, function(err) {
 			if (err) return next(err);
 			var args = [path.join(__dirname, "render.js"), tmp1, tmp2, width, height, numPages];
-			runSlimerJS(args, function(err) {
+			runSlimerJS(args, function(err, messages) {
+				var _messages = (messages||"").trim();
 				if (err) return next(err);
 				fs.readFile(tmp2, function(err, buffer) {
 					if (err) return next(err);
-					if (buffer.length === 0) return next(new Error("SlimerJS buffer is empty"));
+					if (buffer.length === 0) return next(new Error("SlimerJS buffer is empty: " + _messages));
 					var offset = 0;
 					var pages = [];
 					for (var i=0; i<numPages; i++) {
@@ -51,6 +52,7 @@ function _makeTwoTmpFiles(ext1, ext2, next) {
 
 function runSlimerJS(args, next) {
 	var child;
+	var messages = "";
 	if (process.platform === "win32") {
 		child = child_process.spawn("slimerjs.bat", args, {
 			cwd: binDir
@@ -61,16 +63,16 @@ function runSlimerJS(args, next) {
 		});
 	}
 	child.stdout.on("data", function(data) {
-		console.log(data.toString());
+		messages += data.toString();
 	});
 	child.stderr.on("data", function(data) {
-		console.log(data.toString());
+		messages += data.toString();
 	});
 	child.on("error", function(err) {
 		next(err);
 	});
 	child.on("exit", function(code){
-		next(null);
+		next(null, messages);
 	});
 }
 
