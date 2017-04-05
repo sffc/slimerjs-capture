@@ -1,6 +1,6 @@
 {
   "name": "slimerjs-capture",
-  "version": "1.2.2",
+  "version": "1.2.3",
   "description": "Uses SlimerJS (headless Gecko/Firefox) to render an SVG or HTML buffer",
   "main": "index.js",
   "scripts": {
